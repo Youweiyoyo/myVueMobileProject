@@ -4,13 +4,15 @@ import router from './router'
 import store from './store'
 // 导入icon
 import './style/icon.less'
-// 加载全局样式
-import './style/index.less'
 // 加载动态REm基准值
 import 'amfe-flexible'
+
 // Vant样式
 import Vant from 'vant'
+
+// 加载全局样式
 import 'vant/lib/index.css'
+import './style/index.less'
 Vue.use(Vant)
 Vue.config.productionTip = false
 
