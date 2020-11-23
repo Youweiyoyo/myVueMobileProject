@@ -1,6 +1,6 @@
 module.exports = {
   devServer: {
-    // 自定打开浏览器
+    // 自定义打开浏览器
     open: true,
     port: 8888
   }
