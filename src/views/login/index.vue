@@ -1,16 +1,43 @@
 <template>
   <div class="login-container">
     <van-nav-bar title="登录" class="page-nav-bar" />
-    <van-form @submit="subForm">
-      <van-field placeholder="请输入用户名" v-model="user.mobile">
+    <van-form @submit="subForm" ref="loginForm">
+      <van-field
+        placeholder="请输入用户名"
+        v-model="user.mobile"
+        :rules="userFormRules.mobile"
+        name="mobile"
+        type="number"
+        maxlength="11"
+      >
         <i slot="left-icon" class="iconfont iconshouji"></i>
       </van-field>
-      <van-field placeholder="请输入用密码" v-model="user.code">
+      <van-field
+        placeholder="请输入用密码"
+        v-model="user.code"
+        :rules="userFormRules.code"
+        name="code"
+        type="number"
+        maxlength="6"
+      >
         <!-- 图标 -->
         <i slot="left-icon" class="iconfont iconyanzhengma"></i>
         <!-- 发送验证码 -->
         <template #button>
-          <van-button class=" van-btn" size="small" type="default" round
+          <van-count-down
+            :time="1000 * 10"
+            format=" ss s"
+            v-if="isTimeshuow"
+            @finish="isTimeshuow = false"
+          />
+          <van-button
+            v-else
+            class=" van-btn"
+            size="small"
+            type="default"
+            round
+            @click="sendyzm"
+            native-type="button"
             >发送验证码</van-button
           >
         </template>
@@ -30,29 +57,63 @@ export default {
   name: 'LoginPage',
   data() {
     return {
+      // 表单的数据信息
       user: {
         mobile: '', // 用户的手机号
         code: '' //  用户输入的验证码
-      }
+      },
+      // 配置表单的 :rules验证规则
+      userFormRules: {
+        // 输入手机号的验证规则是一个数组，每一个验证规则都是一个对象。数组绑定到:rules上
+        mobile: [
+          { required: true, message: '手机号不能为空' },
+          { pattern: /^1[3|5|7|8]\d{9}$/, message: '手机号格式错误' }
+        ],
+        code: [
+          { required: true, message: '请输入验证码' },
+          { pattern: /\d{6}/, message: '验证码格式错误' }
+        ]
+      },
+      // 控制显示倒计时的数据
+      isTimeshuow: false
     }
   },
   methods: {
+    //  请求表单的处理函数
     async subForm() {
       // 1. 获取表单数据
       const user = this.user //  获取到data中定义的表单数据赋值给user
       // 2. 表单验证
+      this.$toast.loading({
+        message: '登录中...',
+        forbidClick: true,
+        duration: 0
+      })
       // 3. 提交表单请求登录
       try {
         const res = await login(user)
         console.log('登录成功', res)
+        this.$toast.success('登录成功')
       } catch (err) {
         if (err.response.status === 400) {
-          console.log('手机号或验证码错误')
+          this.$toast.fail('手机号或验证码错误')
         } else {
-          console.log('登录失败', err)
+          this.$toast.fail('登录失败,请稍后再试')
         }
       }
       // 4. 根据请求响应结果出来后续操作
+    },
+    // 发送验证码的点击事件
+    async sendyzm() {
+      // 1. 校验手机号码
+      try {
+        await this.$refs.loginForm.validate('mobile')
+      } catch (err) {
+        return this.$toast.fail('验证码发送失败')
+      }
+      // 2. 验证通过，显示倒计时
+      this.isTimeshuow = true
+      // 3. 请求发送验证码
     }
   }
 }
