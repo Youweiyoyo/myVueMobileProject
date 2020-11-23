@@ -25,7 +25,7 @@
         <!-- 发送验证码 -->
         <template #button>
           <van-count-down
-            :time="1000 * 10"
+            :time="1000 * 60"
             format=" ss s"
             v-if="isTimeshuow"
             @finish="isTimeshuow = false"
@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { login } from '@/api/user' // 按需导入登录模块
+import { login, sendSms } from '@/api/user' // 按需导入登录模块
 export default {
   name: 'LoginPage',
   data() {
@@ -114,6 +114,18 @@ export default {
       // 2. 验证通过，显示倒计时
       this.isTimeshuow = true
       // 3. 请求发送验证码
+      try {
+        await sendSms(this.user.mobile)
+        this.$toast('发送成功')
+      } catch (err) {
+        // 发送失败关闭倒计时
+        this.isTimeshuow = false
+        if (err.response.status === 429) {
+          this.$toast('操作过于频繁，请稍后重试')
+        } else {
+          this.$toast('发送失败，请稍后操作')
+        }
+      }
     }
   }
 }
