@@ -8,6 +8,32 @@ const routes = [
     path: '/login',
     name: 'login',
     component: () => import('@/views/login')
+  },
+  {
+    path: '/',
+    component: () => import('@/views/layout'),
+    children: [
+      {
+        path: '',
+        name: 'home',
+        component: () => import('@/views/home')
+      },
+      {
+        path: '/qa',
+        name: 'qa',
+        component: () => import('@/views/qa')
+      },
+      {
+        path: '/shipin',
+        name: 'shipin',
+        component: () => import('@/views/shipin')
+      },
+      {
+        path: '/wode',
+        name: 'wode',
+        component: () => import('@/views/wode')
+      }
+    ]
   }
 ]
 
