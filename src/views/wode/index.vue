@@ -4,13 +4,8 @@
     <div class="header user-info" v-if="user">
       <div class="base-info">
         <div class="left">
-          <van-image
-            class="avatar"
-            src="https://img.yzcdn.cn/vant/cat.jpeg"
-            round
-            fit="cover"
-          />
-          <span class="name">six</span>
+          <van-image class="avatar" :src="userInfo.photo" round fit="cover" />
+          <span class="name">{{ userInfo.name }}</span>
         </div>
         <div class="right">
           <van-button size="mini">编辑资料</van-button>
@@ -18,19 +13,19 @@
       </div>
       <div class="data-stats">
         <div class="data-item">
-          <span class="count">10</span>
+          <span class="count">{{ userInfo.art_count }}</span>
           <span class="text">头条</span>
         </div>
         <div class="data-item">
-          <span class="count">10</span>
+          <span class="count">{{ userInfo.follow_count }}</span>
           <span class="text">关注</span>
         </div>
         <div class="data-item">
-          <span class="count">10</span>
+          <span class="count">{{ userInfo.fans_count }}</span>
           <span class="text">粉丝</span>
         </div>
         <div class="data-item">
-          <span class="count">10</span>
+          <span class="count">{{ userInfo.like_count }}</span>
           <span class="text">获赞</span>
         </div>
       </div>
@@ -57,19 +52,60 @@
     <div class="message">
       <van-cell title="消息通知" is-link />
       <van-cell title="小智同学" is-link />
-      <van-cell title="退出登录" class="outBtn" clickable v-if="user" />
+      <van-cell
+        title="退出登录"
+        class="outBtn"
+        clickable
+        v-if="user"
+        @click="secede"
+      />
     </div>
   </div>
 </template>
 <script>
 import { mapState } from 'vuex'
+import { getUserInfo } from '@/api/user'
 export default {
   name: 'wodeIndex',
   data() {
-    return {}
+    return {
+      //  初始化用户信息对象
+      userInfo: {}
+    }
   },
   computed: {
     ...mapState(['user'])
+  },
+  created() {
+    // 如果用户登录了，则请求加载用户信息的数据
+    if (this.user) {
+      this.loaduserInfo()
+    }
+  },
+  methods: {
+    secede() {
+      this.$dialog
+        .confirm({
+          title: '标题',
+          message: '弹窗内容'
+        })
+        .then(() => {
+          // 确认按钮：清除登录状态(容器中的 user + 本地存储中的user)
+          this.$store.commit('setUser', null)
+        })
+        .catch(() => {
+          console.log('取消')
+        })
+    },
+    // 加载用户信息
+    async loaduserInfo() {
+      try {
+        const { data } = await getUserInfo()
+        this.userInfo = data.data
+      } catch (err) {
+        this.$toast('获取数据失败，请稍后重试')
+      }
+    }
   }
 }
 </script>
