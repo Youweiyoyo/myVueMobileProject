@@ -1,14 +1,7 @@
 <template>
   <div class="wode-container">
-    <!-- 登录和注册 -->
-    <div v-if="user" class="header not-login">
-      <div class="login-btn" @click="$router.push('./login')">
-        <img src="~@/assets/mobile.png" class="mobile-img" alt="" />
-        <span class="text">登录 / 注册</span>
-      </div>
-    </div>
     <!-- 登录状态 -->
-    <div class="header user-info">
+    <div class="header user-info" v-if="user">
       <div class="base-info">
         <div class="left">
           <van-image
@@ -42,6 +35,13 @@
         </div>
       </div>
     </div>
+    <!-- 登录和注册 -->
+    <div class="header not-login" v-else>
+      <div class="login-btn" @click="$router.push('./login')">
+        <img src="~@/assets/mobile.png" class="mobile-img" alt="" />
+        <span class="text">登录 / 注册</span>
+      </div>
+    </div>
     <!-- 未登录状态 -->
     <van-grid column-num="2" class="grid-nav" clickable>
       <van-grid-item class="grid-item">
@@ -53,6 +53,12 @@
         <span slot="text" class="text">历史</span>
       </van-grid-item>
     </van-grid>
+    <!-- 消息通知 -->
+    <div class="message">
+      <van-cell title="消息通知" is-link />
+      <van-cell title="小智同学" is-link />
+      <van-cell title="退出登录" class="outBtn" clickable v-if="user" />
+    </div>
   </div>
 </template>
 <script>
@@ -157,6 +163,15 @@ export default {
         font-size: 27px;
       }
     }
+  }
+  .message {
+    margin-top: 10px;
+  }
+  .outBtn {
+    margin-top: 10px;
+    text-align: center;
+    color: #d86262;
+    font-size: 28px;
   }
 }
 </style>
