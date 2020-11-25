@@ -7,3 +7,8 @@ body {
 .page-nav-bar .van-nav-bar__title {
   color: #fff;
 }
+.page-nav-bar .iconfont {
+  font-size: 45px;
+  font-weight: 700;
+  color: #fff;
+}

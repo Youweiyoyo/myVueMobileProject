@@ -1,6 +1,8 @@
 <template>
   <div class="login-container">
-    <van-nav-bar title="登录" class="page-nav-bar" />
+    <van-nav-bar title="登录" class="page-nav-bar">
+      <i slot="left" class="iconfont iconzuojiantou" @click="$router.back()"></i>
+    </van-nav-bar>
     <van-form @submit="subForm" ref="loginForm">
       <van-field
         placeholder="请输入用户名"
@@ -126,7 +128,9 @@ export default {
           this.$toast('发送失败，请稍后操作')
         }
       }
-    }
+    },
+    // 点击返回
+    goBack() {}
   }
 }
 </script>
