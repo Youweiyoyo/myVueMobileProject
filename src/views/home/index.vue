@@ -14,11 +14,12 @@
     <!-- 标签页 -->
     <van-tabs v-model="active" animated swipeable class="channel">
       <van-tab
-        title="channels.name"
+        :title="channel.name"
         v-for="channel in channels"
         :key="channel.id"
-        >{{ channels.name }}</van-tab
       >
+        <article-list :channel="channel" />
+      </van-tab>
       <div slot="nav-right" class="placeholder"></div>
       <div slot="nav-right" class="hamburger-btn">
         <i class="iconfont icongengduo"></i>
@@ -28,8 +29,12 @@
 </template>
 <script>
 import { getUsersList } from '@/api/user'
+import ArticleList from '../home/components/article-list'
 export default {
   name: 'homeIndex',
+  components: {
+    ArticleList
+  },
   data() {
     return {
       value: '',
@@ -56,6 +61,7 @@ export default {
 
 <style lang="less" scoped>
 .home-container {
+  padding-bottom: 100px;
   /deep/.van-nav-bar__title {
     max-width: unset;
   }
