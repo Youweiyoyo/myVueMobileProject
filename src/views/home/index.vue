@@ -11,14 +11,44 @@
         >搜索</van-button
       >
     </van-nav-bar>
+    <!-- 标签页 -->
+    <van-tabs v-model="active" animated swipeable class="channel">
+      <van-tab
+        title="channels.name"
+        v-for="channel in channels"
+        :key="channel.id"
+        >{{ channels.name }}</van-tab
+      >
+      <div slot="nav-right" class="placeholder"></div>
+      <div slot="nav-right" class="hamburger-btn">
+        <i class="iconfont icongengduo"></i>
+      </div>
+    </van-tabs>
   </div>
 </template>
 <script>
+import { getUsersList } from '@/api/user'
 export default {
   name: 'homeIndex',
   data() {
     return {
-      value: ''
+      value: '',
+      active: '0',
+      channels: [] // 频道列表数据
+    }
+  },
+  created() {
+    this.loadChannels()
+  },
+  methods: {
+    async loadChannels() {
+      try {
+        const { data } = await getUsersList()
+        this.channels = data.data.channels
+        console.log(data)
+      } catch (err) {
+        this.$toast('获取数据失败')
+      }
     }
   }
 }
@@ -38,6 +68,57 @@ export default {
     background-color: #5babfb;
     border: none;
     font-size: 28px;
+  }
+  /deep/.channel {
+    .van-tabs__wrap {
+      height: 82px;
+    }
+    .van-tab {
+      min-width: 200px;
+      border-right: 1px solid #edeff3;
+      font-size: 30px;
+      color: #777;
+    }
+    .van-tab--active {
+      color: #333;
+    }
+    .van-tabs__nav {
+      padding-bottom: 0;
+    }
+    .van-tabs__line {
+      bottom: 8px;
+      width: 31px !important;
+      height: 6px;
+      background-color: #3296fa;
+    }
+    .placeholder {
+      flex-shrink: 0;
+      width: 66px;
+      height: 82px;
+    }
+    .hamburger-btn {
+      position: fixed;
+      right: 0;
+      width: 66px;
+      height: 82px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #fff;
+      opacity: 0.902;
+      i.icongengduo {
+        font-size: 33px;
+      }
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        width: 1px;
+        height: 100%;
+        background-image: url(~@/assets/gradient-gray-line.png);
+        background-size: contain;
+      }
+    }
   }
 }
 </style>
