@@ -10,6 +10,9 @@ import 'amfe-flexible'
 // Vant样式
 import Vant from 'vant'
 
+// 加载dayjs初始化配置
+import '@/utils/dayjs.js'
+
 // 加载全局样式
 import 'vant/lib/index.css'
 import './style/index.less'

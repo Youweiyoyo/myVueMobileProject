@@ -22,7 +22,7 @@
       <div class="label-info-wrap">
         <span>{{ article.aut_name }}</span>
         <span>{{ article.comm_count }}评论</span>
-        <span>{{ article.pubdate }}</span>
+        <span>{{ article.pubdate | relativeTime }}</span>
       </div>
     </div>
     <van-image
@@ -81,16 +81,16 @@ export default {
   }
   .cover-wrap {
     display: flex;
+    height: 100%;
     padding: 30px 0;
     .cover-item {
       flex: 1;
-      height: 146px;
+      height: 100%;
       &:not(last-child) {
         padding-right: 4px;
       }
       .cover-item-img {
         width: 100%;
-        height: 146px;
       }
     }
   }
