@@ -37,7 +37,7 @@
       close-icon-position="top-left"
       :style="{ height: '100%' }"
     >
-      <channel-edit />
+      <channel-edit :my-channels="channels" />
     </van-popup>
   </div>
 </template>

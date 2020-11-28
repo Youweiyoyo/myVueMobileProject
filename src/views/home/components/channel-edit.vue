@@ -8,7 +8,12 @@
       >
     </van-cell>
     <van-grid :gutter="10" class="my-grid">
-      <van-grid-item v-for="value in 8" :key="value" text="文字" />
+      <van-grid-item
+        v-for="(channel, index) in myChannels"
+        :key="index"
+        :text="channel.name"
+        icon="clear"
+      />
     </van-grid>
     <!-- 频道推荐 -->
     <van-cell :border="false">
@@ -30,7 +35,12 @@
 export default {
   name: '',
   components: {},
-  props: {},
+  props: {
+    myChannels: {
+      type: Array,
+      required: true
+    }
+  },
   data() {
     return {}
   },
@@ -60,6 +70,7 @@ export default {
     width: 160px;
     height: 86px;
     .van-grid-item__content {
+      white-space: nowrap;
       background-color: #f4f5f6;
       .van-grid-item__text {
         font-size: 28px;
@@ -67,10 +78,33 @@ export default {
       }
     }
   }
+  /deep/ .my-grid {
+    .van-grid-item {
+      .van-icon-clear {
+        position: absolute;
+        right: -10px;
+        top: -10px;
+        color: #cacaca;
+        font-size: 30px;
+        z-index: 2;
+      }
+      .van-grid-item__text {
+        margin-top: 0;
+      }
+    }
+  }
   /deep/ .recommend-grid {
-    .grid-item__content {
-      flex-direction: row;
+    .grid-item {
+      .van-grid-item__content {
+        flex-direction: row;
+        .van-icon-plus {
+          font-size: 28px;
+          margin-right: 6px;
+        }
+      }
     }
   }
 }
+//     right: -37px;
+//     top: -28px;
 </style>
