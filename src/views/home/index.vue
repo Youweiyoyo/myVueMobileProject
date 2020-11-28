@@ -49,6 +49,8 @@
 import { getUsersList } from '@/api/user'
 import ArticleList from '../home/components/article-list'
 import channelEdit from './components/channel-edit'
+import { mapState } from 'vuex'
+import { getItem } from '@/utils/storage'
 export default {
   name: 'homeIndex',
   components: {
@@ -63,15 +65,29 @@ export default {
       isChennelEditShow: false // 控制编辑频道弹出层的展示
     }
   },
+  computed: {
+    ...mapState(['user'])
+  },
   created() {
     this.loadChannels()
   },
   methods: {
     async loadChannels() {
       try {
-        const { data } = await getUsersList()
-        this.channels = data.data.channels
-        console.log(data)
+        let channels = []
+        if (this.user) {
+          const { data } = await getUsersList()
+          channels = data.data.channels
+        } else {
+          const localChannels = getItem('TOUTIAO_CHANNELS')
+          if (localChannels) {
+            channels = localChannels
+          } else {
+            const { data } = await getUsersList()
+            channels = data.data.channels
+          }
+        }
+        this.channels = channels
       } catch (err) {
         this.$toast('获取数据失败')
       }
