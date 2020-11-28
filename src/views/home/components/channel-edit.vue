@@ -9,11 +9,15 @@
     </van-cell>
     <van-grid :gutter="10" class="my-grid">
       <van-grid-item
+        class="grid-item"
         v-for="(channel, index) in myChannels"
         :key="index"
-        :text="channel.name"
         icon="clear"
-      />
+      >
+        <span class="text" slot="text" :class="{ active: index === active }">{{
+          channel.name
+        }}</span>
+      </van-grid-item>
     </van-grid>
     <!-- 频道推荐 -->
     <van-cell :border="false">
@@ -38,6 +42,10 @@ export default {
   props: {
     myChannels: {
       type: Array,
+      required: true
+    },
+    active: {
+      type: Number,
       required: true
     }
   },
@@ -90,6 +98,14 @@ export default {
       }
       .van-grid-item__text {
         margin-top: 0;
+        font-size: 28px;
+        color: #222222;
+      }
+      .text {
+        font-size: 28px;
+      }
+      .active {
+        color: red;
       }
     }
   }
