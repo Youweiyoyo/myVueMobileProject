@@ -37,7 +37,11 @@
       close-icon-position="top-left"
       :style="{ height: '100%' }"
     >
-      <channel-edit :my-channels="channels" :active="active"/>
+      <channel-edit
+        :my-channels="channels"
+        :active="active"
+        @update-active="onUpdateActive"
+      />
     </van-popup>
   </div>
 </template>
@@ -71,6 +75,10 @@ export default {
       } catch (err) {
         this.$toast('获取数据失败')
       }
+    },
+    onUpdateActive(index, isChennelEditShow = true) {
+      this.active = index // 更新激活的状态
+      this.isChennelEditShow = isChennelEditShow // 控制弹层的关闭与显示
     }
   }
 }

@@ -3,8 +3,14 @@
     <!-- 我的频道 -->
     <van-cell :border="false">
       <div slot="title" class="title-text">我的频道</div>
-      <van-button class="edit-btn" type="danger" plain round size="mini"
-        >编辑</van-button
+      <van-button
+        class="edit-btn"
+        type="danger"
+        plain
+        round
+        size="mini"
+        @click="compileBtn = isEdit = !isEdit"
+        >{{ isEdit ? '完成' : '编辑' }}</van-button
       >
     </van-cell>
     <van-grid :gutter="10" class="my-grid">
@@ -12,8 +18,14 @@
         class="grid-item"
         v-for="(channel, index) in myChannels"
         :key="index"
-        icon="clear"
+        @click="onMychannelclick(channel, index)"
       >
+        <van-icon
+          slot="icon"
+          name="clear"
+          v-show="isEdit && !fiexChannels.includes(channel.id)"
+        >
+        </van-icon>
         <span class="text" slot="text" :class="{ active: index === active }">{{
           channel.name
         }}</span>
@@ -30,6 +42,7 @@
         :text="channel.name"
         class="grid-item"
         icon="plus"
+        @click="addMychannel(channel)"
       />
     </van-grid>
   </div>
@@ -52,7 +65,9 @@ export default {
   },
   data() {
     return {
-      allChannels: [] // 所有频道
+      allChannels: [], // 所有频道
+      isEdit: false, // 控制编辑状态的显示
+      fiexChannels: [0] // 固定频道，不允许删除
     }
   },
   computed: {
@@ -85,6 +100,30 @@ export default {
       } catch (err) {
         this.$toast('数据获取失败')
       }
+    },
+    // 将推荐频道添加到我的频道
+    addMychannel(channel) {
+      this.myChannels.push(channel)
+    },
+    // 编辑或者删除
+    onMychannelclick(channel, index) {
+      if (this.isEdit) {
+        // 如果是固定频道，则不删除
+        if (this.fiexChannels.includes(channel.id)) {
+          return
+        }
+        // 要删除的元素的开始索引
+        // 删除的个数，如果不指定，则从参数1开始一直删除4
+        if (index <= this.active) {
+          // 让激活频道的索引-1
+          this.$emit('update-active', this.active - 1, true)
+        }
+        this.myChannels.splice(index, 1)
+        //  编辑状态 ，执行删除频道
+      } else {
+        // 非编辑状态，执行切换频道
+        this.$emit('update-active', index, false)
+      }
     }
   }
 }
@@ -113,6 +152,10 @@ export default {
       .van-grid-item__text {
         font-size: 28px;
         color: #222222;
+        margin-top: 0;
+      }
+      .van-grid-item__icon-wrapper {
+        position: unset;
       }
     }
   }
@@ -151,6 +194,4 @@ export default {
     }
   }
 }
-//     right: -37px;
-//     top: -28px;
 </style>
