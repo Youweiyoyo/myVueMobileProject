@@ -1,17 +1,15 @@
 <template>
   <div class="search-suggestion">
-    <van-cell
-      :title="text"
-      icon="search"
-      v-for="(text, index) in suggestions"
-      :key="index"
-    >
+    <van-cell icon="search" v-for="(text, index) in suggestions" :key="index">
+      <span slot="title" v-html="highlight(text)"></span>
     </van-cell>
   </div>
 </template>
 
 <script>
 import { getSeatchSuggestion } from '@/api/search'
+// 按需加载有好处，只会把使用到的成员打包到结果中
+import { debounce } from 'lodash'
 export default {
   name: 'SearchSuggestion',
   components: {},
@@ -23,7 +21,8 @@ export default {
   },
   data() {
     return {
-      suggestions: [] // 联想建议数组
+      suggestions: [], // 联想建议数组
+      htmlStr: 'Hello <span style="color:red"></span>'
     }
   },
   computed: {},
@@ -31,9 +30,13 @@ export default {
   watch: {
     searchText: {
       // 当searchText发生改变的时候就会调用handler函数
-      handler(value) {
+      // debounce 函数
+      // 参数 1 : 一个函数
+      // 参数 2 : 延迟时间，单位是毫秒
+      // 返回值 : 防抖之后的函数
+      handler: debounce(function(value) {
         this.loadSearchSuggestions(value)
-      },
+      }, 200),
       immediate: true // 该回调将会在侦听开始之后被立即调用
     }
   },
@@ -47,9 +50,21 @@ export default {
       } catch (err) {
         this.$toast('数据获取失败，请稍后重试')
       }
+    },
+    // 高亮函数
+    highlight(text) {
+      const highlightStr = `<span class="active">${this.searchText}</span>`
+      const reg = new RegExp(this.searchText, 'gi')
+      return text.replace(reg, highlightStr)
     }
   }
 }
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.search-suggestion {
+  /deep/ span.active {
+    color: #3296fa;
+  }
+}
+</style>
