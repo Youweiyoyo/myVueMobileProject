@@ -9,3 +9,11 @@ export const getSeatchSuggestion = q => {
     }
   })
 }
+
+export const getSeatchResult = params => {
+  return request({
+    method: 'GET',
+    url: '/app/v1_0/search',
+    params
+  })
+}
