@@ -8,16 +8,16 @@
         background="#3296fa"
         @search="onSearch"
         @cancel="onCancel"
+        @focus="isResultShow = false"
       />
     </form>
     <!-- 搜索栏 -->
-
-    <!-- 搜索历史记录 -->
-    <search-history />
+    <!-- 搜索结果 -->
+    <search-result v-if="isResultShow" />
     <!-- 联想建议 -->
-    <search-suggestion />
-    <!-- 历史记录 -->
-    <search-result />
+    <search-suggestion v-else-if="searchText" :search-text="searchText" />
+    <!-- 搜索历史记录 -->
+    <search-history v-else />
   </div>
 </template>
 
@@ -35,7 +35,8 @@ export default {
   props: {},
   data() {
     return {
-      searchText: ''
+      searchText: '',
+      isResultShow: false // 控制搜索结果的展示
     }
   },
   computed: {},
@@ -44,7 +45,7 @@ export default {
   created() {},
   methods: {
     onSearch(val) {
-      console.log(val)
+      this.isResultShow = true
     },
     onCancel() {
       this.$router.back()
