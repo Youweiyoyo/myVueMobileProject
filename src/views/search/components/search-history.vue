@@ -1,16 +1,20 @@
 <template>
   <div class="search-history">
     <van-cell title="搜素历史">
-      <span>全部删除</span>
-      <span>完成</span>
-      <van-icon name="delete" />
+      <div v-if="isDeletShow">
+        <span>全部删除</span>
+        &nbsp;&nbsp;
+        <span @click="isDeletShow = false">完成</span>
+      </div>
+      <van-icon v-else name="delete" @click="isDeletShow = true" />
     </van-cell>
     <van-cell
       :title="item"
       v-for="(item, index) in SearchHistories"
       :key="index"
+      @click="onSeaechItem(item, index)"
     >
-      <van-icon name="close" />
+      <van-icon v-if="isDeletShow" name="close" />
     </van-cell>
   </div>
 </template>
@@ -26,13 +30,24 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      isDeletShow: false // 控制删除显示的状态
+    }
   },
   computed: {},
   filters: {},
   watch: {},
   created() {},
-  methods: {}
+  methods: {
+    onSeaechItem(item, index) {
+      if (this.isDeletShow) {
+        //  删除状态，删除历史记录数据
+        this.SearchHistories.splice(index)
+      } else {
+        // 非删除状态，直接进入搜索
+      }
+    }
+  }
 }
 </script>
 
