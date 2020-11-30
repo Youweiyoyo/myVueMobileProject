@@ -21,7 +21,7 @@
       @search="onSearch"
     />
     <!-- 搜索历史记录 -->
-    <search-history v-else />
+    <search-history v-else :search-histories="SearchHistories" />
   </div>
 </template>
 
@@ -40,7 +40,8 @@ export default {
   data() {
     return {
       searchText: '',
-      isResultShow: false // 控制搜索结果的展示
+      isResultShow: false, // 控制搜索结果的展示
+      SearchHistories: [] // 搜索的历史纪录数据
     }
   },
   computed: {},
@@ -49,7 +50,16 @@ export default {
   created() {},
   methods: {
     onSearch(val) {
+      // 更新文本框内容
       this.searchText = val
+      // 存储搜索历史记录
+      // 要求：不要有重复历史记录，最新的排在最前面
+      const index = this.SearchHistories.indexOf(val)
+      if (index !== -1) {
+        this.SearchHistories.splice(index, 1)
+      }
+      this.SearchHistories.unshift(val)
+      // 显示搜索结果
       this.isResultShow = true
     },
     onCancel() {
