@@ -21,7 +21,12 @@
       @search="onSearch"
     />
     <!-- 搜索历史记录 -->
-    <search-history v-else :search-histories="SearchHistories" />
+    <search-history
+      v-else
+      :search-histories="SearchHistories"
+      @clear-search-histories="SearchHistories = []"
+      @search="onSearch"
+    />
   </div>
 </template>
 
@@ -29,6 +34,7 @@
 import SearchHistory from './components/search-history'
 import SearchResult from './components/search-result'
 import SearchSuggestion from './components/search-suggestion'
+import { setItem, getItem } from '@/utils/storage'
 export default {
   name: 'searchIndex',
   components: {
@@ -41,12 +47,16 @@ export default {
     return {
       searchText: '',
       isResultShow: false, // 控制搜索结果的展示
-      SearchHistories: [] // 搜索的历史纪录数据
+      SearchHistories: getItem('TOTIAO_SEARCH_HISTORIES') || [] // 搜索的历史纪录数据
     }
   },
   computed: {},
   filters: {},
-  watch: {},
+  watch: {
+    SearchHistories(value) {
+      setItem('TOTIAO_SEARCH_HISTORIES', value)
+    }
+  },
   created() {},
   methods: {
     onSearch(val) {
