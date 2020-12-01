@@ -30,7 +30,13 @@
           <div slot="label" class="publish-date">
             {{ article.pubdate | relativeTime }}
           </div>
-          <follow-user class="follow-btn" :is-followed="article.is_followed" />
+          <!--             @updata-is_followed="article.is_followed = $event" -->
+          <!--             :is-followed="article.is_followed" -->
+          <follow-user
+            class="follow-btn"
+            :user-id="article.aut_id"
+            v-model="article.is_followed"
+          />
           <!-- <van-button
             :loading="followLodings"
             v-if="article.is_followed"
@@ -62,6 +68,26 @@
           ref="article-content"
         ></div>
         <van-divider>正文结束</van-divider>
+        <!-- 底部区域 -->
+        <div class="article-bottom">
+          <van-button class="comment-btn" type="default" round size="small"
+            >写评论</van-button
+          >
+          <van-icon name="comment-o" info="123" color="#777" />
+          <!-- 收藏 -->
+          <collect-article
+            color="btn-item"
+            v-model="article.is_collected"
+            :article-id="article.art_id"
+          />
+          <like-article
+            class="btn-item"
+            v-model="article.attitude"
+            :article-id="article.art_id"
+          />
+          <van-icon name="share" color="#777777"></van-icon>
+        </div>
+        <!-- /底部区域 -->
       </div>
       <!-- /加载完成-文章详情 -->
 
@@ -80,18 +106,6 @@
       </div>
       <!-- /加载失败：其它未知错误（例如网络原因或服务端异常） -->
     </div>
-
-    <!-- 底部区域 -->
-    <div class="article-bottom">
-      <van-button class="comment-btn" type="default" round size="small"
-        >写评论</van-button
-      >
-      <van-icon name="comment-o" info="123" color="#777" />
-      <van-icon color="#777" name="star-o" />
-      <van-icon color="#777" name="good-job-o" />
-      <van-icon name="share" color="#777777"></van-icon>
-    </div>
-    <!-- /底部区域 -->
   </div>
 </template>
 
@@ -99,6 +113,8 @@
 import { getArticlesById } from '@/api/article'
 import { ImagePreview } from 'vant'
 import FollowUser from '@/components/follow-user'
+import CollectArticle from '@/components/collect-article'
+import likeArticle from '@/components/like-article'
 // ImagePreview({
 //   images: [
 //     'https://img.yzcdn.cn/vant/apple-1.jpg',
@@ -112,7 +128,9 @@ import FollowUser from '@/components/follow-user'
 export default {
   name: 'ArticleIndex',
   components: {
-    FollowUser
+    FollowUser,
+    CollectArticle,
+    likeArticle
   },
   props: {
     articleId: {
@@ -218,7 +236,6 @@ export default {
         height: 58px;
       }
     }
-
     .article-content {
       padding: 55px 32px;
       /deep/ p {
@@ -242,7 +259,7 @@ export default {
     align-items: center;
     justify-content: center;
     background-color: #fff;
-    .van-icon {
+    /deep/ .van-icon {
       font-size: 122px;
       color: #b4b4b4;
     }

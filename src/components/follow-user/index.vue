@@ -1,7 +1,7 @@
 <template>
   <van-button
-    :loading="loding"
-    v-if="isFollowed"
+    :loading="logind"
+    v-if="value"
     class="follow-btn"
     round
     size="small"
@@ -9,7 +9,7 @@
     >已关注</van-button
   >
   <van-button
-    :loading="loading"
+    :loading="logind"
     @click="onFollow"
     v-else
     class="follow-btn"
@@ -28,8 +28,12 @@ export default {
   name: 'FollowUser',
   components: {},
   props: {
-    isFollowed: {
+    value: {
       type: Boolean,
+      required: true
+    },
+    userId: {
+      type: [Number, String, Object],
       required: true
     }
   },
@@ -46,15 +50,16 @@ export default {
     async onFollow() {
       this.loading = true // 展示loding的状态
       try {
-        if (this.isFollowed) {
+        if (this.value) {
           // 已关注，取消关注
-          await delFollow(this.article.aut_id)
+          await delFollow(this.userId)
           this.article.is_followed = false
         } else {
           // 没有关注，取消关注
-          await addFollow(this.article.aut_id)
+          await addFollow(this.userId)
         }
-        this.article.is_followed = !this.article.is_followed
+        // this.$emit('updata-is_followed', !this.value)
+        this.$emit('input', !this.value)
       } catch (err) {
         let message = '操作失败，请重试'
         if (err.response && err.response.status === 400) {
