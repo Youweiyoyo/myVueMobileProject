@@ -7,19 +7,18 @@
     error-text="加载失败,请点击重试"
     @load="onLoad"
   >
-    <van-cell
-      v-for="(item, index) in list"
-      :key="index"
-      :title="item.content"
-    />
+    <comment-item v-for="(item, index) in list" :key="index" :comment="item" />
   </van-list>
 </template>
 
 <script>
 import { getComments } from '@/api/component'
+import CommentItem from './comment-item'
 export default {
   name: 'ComentList',
-  components: {},
+  components: {
+    CommentItem
+  },
   props: {
     source: {
       type: [Number, String, Object],
@@ -48,7 +47,7 @@ export default {
         // 1.请求获取数据
         const { data } = await getComments({
           type: 'a',
-          source: this.source,
+          source: this.source.toString(),
           offset: this.offset, // 获取下一页数据的标记
           limit: this.limit // 获取的评论数据的个数,不传表示采用后端
         })

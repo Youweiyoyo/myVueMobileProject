@@ -1,7 +1,12 @@
 <template>
   <div class="article-container">
     <!-- 导航栏 -->
-    <van-nav-bar class="page-nav-bar" left-arrow title="黑马头条"></van-nav-bar>
+    <van-nav-bar
+      class="page-nav-bar"
+      left-arrow
+      title="黑马头条"
+      @click-left="$router.back()"
+    ></van-nav-bar>
     <!-- /导航栏 -->
 
     <div class="main-wrap">
@@ -76,7 +81,12 @@
         <!-- 文章评论列表 /-->
         <!-- 底部区域 -->
         <div class="article-bottom">
-          <van-button class="comment-btn" type="default" round size="small"
+          <van-button
+            class="comment-btn"
+            type="default"
+            round
+            size="small"
+            @click="isPostShow = true"
             >写评论</van-button
           >
           <van-icon name="comment-o" :info="totalComentCount" color="#777" />
@@ -94,6 +104,10 @@
           <van-icon name="share" color="#777777"></van-icon>
         </div>
         <!-- /底部区域 -->
+        <!-- 发布评论弹出层 -->
+        <van-popup v-model="isPostShow" position="bottom">
+          <comment-post :target="article.art_id" />
+        </van-popup>
       </div>
       <!-- /加载完成-文章详情 -->
 
@@ -121,14 +135,16 @@ import { ImagePreview } from 'vant'
 import FollowUser from '@/components/follow-user'
 import CollectArticle from '@/components/collect-article'
 import likeArticle from '@/components/like-article'
-import commentList from './components/comment-list'
+import CommentList from './components/comment-list'
+import CommentPost from './components/comment-post'
 export default {
   name: 'ArticleIndex',
   components: {
     FollowUser,
     CollectArticle,
     likeArticle,
-    commentList
+    CommentList,
+    CommentPost
   },
   props: {
     articleId: {
@@ -142,7 +158,8 @@ export default {
       loading: true, // 加载中的loading 状态
       errStatus: 0, // 失败的状态码
       followLodings: false,
-      totalComentCount: 0
+      totalComentCount: 0,
+      isPostShow: false // 控制发布评论的显示状态
     }
   },
   computed: {},
@@ -195,6 +212,16 @@ export default {
 <style scoped lang="less">
 @import './github-markdown.css';
 .article-container {
+  /deep/ .van-nav-bar__content {
+    .van-nav-bar__left {
+      .van-icon {
+        color: #fff;
+      }
+    }
+  }
+  .van-nav-bar {
+    color: #fff;
+  }
   .main-wrap {
     position: fixed;
     left: 0;
