@@ -1,0 +1,79 @@
+<template>
+  <van-list
+    v-model="loading"
+    :finished="finished"
+    finished-text="没有更多了"
+    :error="error"
+    error-text="加载失败,请点击重试"
+    @load="onLoad"
+  >
+    <van-cell
+      v-for="(item, index) in list"
+      :key="index"
+      :title="item.content"
+    />
+  </van-list>
+</template>
+
+<script>
+import { getComments } from '@/api/component'
+export default {
+  name: 'ComentList',
+  components: {},
+  props: {
+    source: {
+      type: [Number, String, Object],
+      required: true
+    }
+  },
+  data() {
+    return {
+      list: [],
+      loading: false,
+      finished: false,
+      offset: null, // 获取下一页数据的标记
+      limit: 10,
+      error: false
+    }
+  },
+  computed: {},
+  filters: {},
+  watch: {},
+  created() {
+    this.onLoad()
+  },
+  methods: {
+    async onLoad() {
+      try {
+        // 1.请求获取数据
+        const { data } = await getComments({
+          type: 'a',
+          source: this.source,
+          offset: this.offset, // 获取下一页数据的标记
+          limit: this.limit // 获取的评论数据的个数,不传表示采用后端
+        })
+        // 2.将数据添加到列表中
+        const { results } = data.data
+        this.list.push(...results)
+        // 把文章的评论的总数量传递到外部
+        this.$emit('onload-success', data.data)
+        // 3.将loading 设置未false
+        this.loading = false
+        // 4.判断是否还有数据
+        if (results.length) {
+          // 有就更新获取下一页的数据页码
+          this.offset = data.data.last_id
+        } else {
+          // 没有就将 finished 设置结束
+          this.finished = true
+        }
+      } catch (err) {
+        this.error = true
+        this.loading = false
+      }
+    }
+  }
+}
+</script>
+
+<style lang="less" scoped></style>

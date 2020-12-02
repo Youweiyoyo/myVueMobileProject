@@ -68,12 +68,18 @@
           ref="article-content"
         ></div>
         <van-divider>正文结束</van-divider>
+        <!-- 文章评论列表 -->
+        <comment-list
+          :source="article.art_id"
+          @onload-success="totalComentCount = $event.total_count"
+        />
+        <!-- 文章评论列表 /-->
         <!-- 底部区域 -->
         <div class="article-bottom">
           <van-button class="comment-btn" type="default" round size="small"
             >写评论</van-button
           >
-          <van-icon name="comment-o" info="123" color="#777" />
+          <van-icon name="comment-o" :info="totalComentCount" color="#777" />
           <!-- 收藏 -->
           <collect-article
             color="btn-item"
@@ -115,22 +121,14 @@ import { ImagePreview } from 'vant'
 import FollowUser from '@/components/follow-user'
 import CollectArticle from '@/components/collect-article'
 import likeArticle from '@/components/like-article'
-// ImagePreview({
-//   images: [
-//     'https://img.yzcdn.cn/vant/apple-1.jpg',
-//     'https://img.yzcdn.cn/vant/apple-2.jpg'
-//   ],
-//   // 起始位置  从 0 开始
-//   startPosition: 1,
-//   onClose() {}
-// })
-
+import commentList from './components/comment-list'
 export default {
   name: 'ArticleIndex',
   components: {
     FollowUser,
     CollectArticle,
-    likeArticle
+    likeArticle,
+    commentList
   },
   props: {
     articleId: {
@@ -143,7 +141,8 @@ export default {
       article: {}, // 文章详情
       loading: true, // 加载中的loading 状态
       errStatus: 0, // 失败的状态码
-      followLodings: false
+      followLodings: false,
+      totalComentCount: 0
     }
   },
   computed: {},
