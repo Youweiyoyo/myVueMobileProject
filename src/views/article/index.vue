@@ -77,6 +77,7 @@
         <comment-list
           :source="article.art_id"
           @onload-success="totalComentCount = $event.total_count"
+          :list="CommentList"
         />
         <!-- 文章评论列表 /-->
         <!-- 底部区域 -->
@@ -106,7 +107,10 @@
         <!-- /底部区域 -->
         <!-- 发布评论弹出层 -->
         <van-popup v-model="isPostShow" position="bottom">
-          <comment-post :target="article.art_id" />
+          <comment-post
+            :target="article.art_id"
+            @post-success="onPostSuccess"
+          />
         </van-popup>
       </div>
       <!-- /加载完成-文章详情 -->
@@ -126,6 +130,11 @@
       </div>
       <!-- /加载失败：其它未知错误（例如网络原因或服务端异常） -->
     </div>
+
+    <!-- 评论回复弹出层 -->
+    <van-popup v-model="isReplyShow" position="bottom" style="height:100%">
+      <comment-post :target="article.art_id" @post-success="onPostSuccess" />
+    </van-popup>
   </div>
 </template>
 
@@ -159,7 +168,9 @@ export default {
       errStatus: 0, // 失败的状态码
       followLodings: false,
       totalComentCount: 0,
-      isPostShow: false // 控制发布评论的显示状态
+      isPostShow: false, // 控制发布评论的显示状态
+      CommentList: [], // 评论列表
+      isReplyShow: false
     }
   },
   computed: {},
@@ -205,6 +216,12 @@ export default {
         }
       })
       console.log(images)
+    },
+    onPostSuccess(data) {
+      // 关闭弹出层
+      this.isPostShow = false
+      // 将发布内容显示到列表顶部
+      this.CommentList.unshift(data.new_obj)
     }
   }
 }
