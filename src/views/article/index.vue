@@ -134,7 +134,11 @@
 
     <!-- 评论回复弹出层 -->
     <van-popup v-model="isReplyShow" position="bottom" style="height:100%">
-      <comment-reply :comment="currentComment" @close="isReplyShow = false" />
+      <comment-reply
+        :comment="currentComment"
+        @close="isReplyShow = false"
+        v-if="isReplyShow"
+      />
     </van-popup>
   </div>
 </template>
@@ -157,6 +161,12 @@ export default {
     CommentList,
     CommentPost,
     CommentReply
+  },
+  // 给所有的后代组件提供数据
+  provide: function() {
+    return {
+      articleId: this.articleId
+    }
   },
   props: {
     articleId: {

@@ -21,6 +21,12 @@ import { addComment } from '@/api/component'
 export default {
   name: 'CommentPost',
   components: {},
+  inject: {
+    articleId: {
+      type: [Number, String, Object],
+      default: null
+    }
+  },
   props: {
     target: {
       type: [Number, String, Object],
@@ -45,9 +51,9 @@ export default {
       })
       try {
         const { data } = await addComment({
-          target: this.target, // 评论的目标id
+          target: this.target.toString(), // 评论的目标id
           content: this.message, // 评论的内容
-          art_id: null // 文章id
+          art_id: this.articleId ? this.articleId.toString() : null // 文章id
         })
         // 清空文本框
         this.message = ''
