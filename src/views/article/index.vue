@@ -78,6 +78,7 @@
           :source="article.art_id"
           @onload-success="totalComentCount = $event.total_count"
           :list="CommentList"
+          @reply-click="onReplyClick"
         />
         <!-- 文章评论列表 /-->
         <!-- 底部区域 -->
@@ -133,7 +134,7 @@
 
     <!-- 评论回复弹出层 -->
     <van-popup v-model="isReplyShow" position="bottom" style="height:100%">
-      <comment-post :target="article.art_id" @post-success="onPostSuccess" />
+      <comment-reply />
     </van-popup>
   </div>
 </template>
@@ -146,6 +147,7 @@ import CollectArticle from '@/components/collect-article'
 import likeArticle from '@/components/like-article'
 import CommentList from './components/comment-list'
 import CommentPost from './components/comment-post'
+import CommentReply from './components/comment-reply'
 export default {
   name: 'ArticleIndex',
   components: {
@@ -153,7 +155,8 @@ export default {
     CollectArticle,
     likeArticle,
     CommentList,
-    CommentPost
+    CommentPost,
+    CommentReply
   },
   props: {
     articleId: {
@@ -222,6 +225,10 @@ export default {
       this.isPostShow = false
       // 将发布内容显示到列表顶部
       this.CommentList.unshift(data.new_obj)
+    },
+    onReplyClick(comment) {
+      this.isReplyShow = true // 显示评论回复弹出层
+      console.log(comment)
     }
   }
 }

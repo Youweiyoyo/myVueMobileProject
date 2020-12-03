@@ -7,7 +7,12 @@
     error-text="加载失败,请点击重试"
     @load="onLoad"
   >
-    <comment-item v-for="(item, index) in list" :key="index" :comment="item" />
+    <comment-item
+      v-for="(item, index) in list"
+      :key="index"
+      :comment="item"
+      @reply-click="$emit('reply-click', $event)"
+    />
   </van-list>
 </template>
 
