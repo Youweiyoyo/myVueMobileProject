@@ -6,6 +6,7 @@
     :error="error"
     error-text="加载失败,请点击重试"
     @load="onLoad"
+    :immediate-check="false"
   >
     <comment-item
       v-for="(item, index) in list"
@@ -32,6 +33,14 @@ export default {
     list: {
       type: Array,
       default: () => []
+    },
+    type: {
+      type: String,
+      // 自定义Prop数据验证
+      validator(value) {
+        return ['a', 'c'].includes(value)
+      },
+      default: 'a'
     }
   },
   data() {
@@ -48,14 +57,17 @@ export default {
   filters: {},
   watch: {},
   created() {
+    this.loading = true // 初始化时手动开启loding
     this.onLoad()
   },
   methods: {
     async onLoad() {
       try {
+        // 获取文章的评论和获取评论的回复是同一个接口
+        // 唯一的区别是接口的参数不一样
         // 1.请求获取数据
         const { data } = await getComments({
-          type: 'a',
+          type: this.type,
           source: this.source.toString(),
           offset: this.offset, // 获取下一页数据的标记
           limit: this.limit // 获取的评论数据的个数,不传表示采用后端
