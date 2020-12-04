@@ -1,44 +1,32 @@
 <template>
-  <div class="update-name">
-    <!-- 导航栏 -->
-    <van-nav-bar
-      title="设置昵称"
-      left-text="取消"
-      right-text="完成"
-      @click-left="$emit('close')"
-      @click-right="onConfirm"
+  <div class="update-gender">
+    <van-picker
+      default-index="value"
+      title="性别"
+      show-toolbar
+      :columns="columns"
+      @cancel="$emit('close')"
+      @confirm="onConfirm"
+      @change="onPickChange"
     />
-    <!-- /导航栏 -->
-    <!-- 输入框 -->
-    <div class="fild-wrap">
-      <van-field
-        v-model.trim="localName"
-        rows="2"
-        autosize
-        type="textarea"
-        maxlength="7"
-        placeholder="请输入昵称"
-        show-word-limit
-      />
-    </div>
-    <!-- /输入框 -->
   </div>
 </template>
 
 <script>
 import { UpdateUserProfile } from '@/api/user'
 export default {
-  name: 'UpdateName',
+  name: 'UpdateGender',
   components: {},
   props: {
     value: {
-      type: String,
+      type: Number,
       required: true
     }
   },
   data() {
     return {
-      localName: this.value
+      columns: ['男', '女'],
+      lacalGender: this.value
     }
   },
   computed: {},
@@ -53,16 +41,16 @@ export default {
         duration: 0 // 持续展示
       })
       try {
-        const localName = this.localName
-        if (!localName.length) {
+        const lacalGender = this.lacalGender
+        if (!lacalGender.length) {
           this.$toast('昵称不能为空')
           return
         }
         await UpdateUserProfile({
-          name: localName
+          gender: lacalGender
         })
         // 更新视图
-        this.$emit('input', localName)
+        this.$emit('input', lacalGender)
         // 关闭弹层
         this.$emit('close')
         // 提示成功
@@ -70,13 +58,12 @@ export default {
       } catch (err) {
         this.$toast.fail('更新失败')
       }
+    },
+    onPickChange(Picker, value, index) {
+      this.lacalGender = index
     }
   }
 }
 </script>
 
-<style lang="less" scoped>
-.fild-wrap {
-  padding: 20px;
-}
-</style>
+<style lang="less" scoped></style>
