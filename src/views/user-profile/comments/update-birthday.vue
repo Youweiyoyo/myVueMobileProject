@@ -1,32 +1,34 @@
 <template>
-  <div class="update-gender">
-    <van-picker
-      default-index="value"
-      title="性别"
-      show-toolbar
-      :columns="columns"
+  <div class="update-birthday">
+    <!-- max-date 和 min-date 可选的最大和最小日期 -->
+    <van-datetime-picker
+      v-model="currentDate"
+      type="date"
+      :min-date="minDate"
+      :max-date="maxDate"
       @cancel="$emit('close')"
       @confirm="onConfirm"
-      @change="onPickChange"
     />
   </div>
 </template>
 
 <script>
 import { UpdateUserProfile } from '@/api/user'
+import dayjs from 'dayjs'
 export default {
-  name: 'UpdateGender',
+  name: 'UpdateBirthday',
   components: {},
   props: {
     value: {
-      type: Number,
+      type: String,
       required: true
     }
   },
   data() {
     return {
-      columns: ['男', '女'],
-      lacalGender: this.value
+      minDate: new Date(1970, 0, 1),
+      maxDate: new Date(),
+      currentDate: new Date(this.value)
     }
   },
   computed: {},
@@ -41,12 +43,12 @@ export default {
         duration: 0 // 持续展示
       })
       try {
-        const lacalGender = this.lacalGender
+        const currentDate = dayjs(this.currentDate).format('YYYY-MM-DD')
         await UpdateUserProfile({
-          gender: lacalGender
+          birthday: currentDate
         })
         // 更新视图
-        this.$emit('input', lacalGender)
+        this.$emit('input', currentDate)
         // 关闭弹层
         this.$emit('close')
         // 提示成功
@@ -54,9 +56,6 @@ export default {
       } catch (err) {
         this.$toast.fail('更新失败')
       }
-    },
-    onPickChange(Picker, value, index) {
-      this.lacalGender = index
     }
   }
 }

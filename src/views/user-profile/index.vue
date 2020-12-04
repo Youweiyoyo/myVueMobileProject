@@ -8,8 +8,14 @@
       @click-left="$router.back()"
     />
     <!-- /导航栏 -->
+    <input type="file" hidden ref="file" />
     <!-- 个人信息 -->
-    <van-cell title="头像" is-link>
+    <van-cell
+      @change="onFileChange"
+      title="头像"
+      @click="$refs.file.click()"
+      is-link
+    >
       <van-image class="avatar" fit="cover" round :src="user.photo" />
     </van-cell>
     <van-cell
@@ -24,7 +30,12 @@
       :value="user.gender === 0 ? '男' : '女'"
       is-link
     />
-    <van-cell title="生日" :value="user.birthday" is-link />
+    <van-cell
+      @click="isUpdateBirthdayShow = true"
+      title="生日"
+      :value="user.birthday"
+      is-link
+    />
     <!-- /个人信息 -->
     <!-- 编辑昵称 -->
     <van-popup position="bottom" v-model="isUpdateNameShow" style="height:100%">
@@ -44,6 +55,15 @@
       />
     </van-popup>
     <!-- /编辑性别 -->
+    <!-- 编辑生日 -->
+    <van-popup position="bottom" v-model="isUpdateBirthdayShow">
+      <update-birthday
+        v-if="isUpdateBirthdayShow"
+        v-model="user.birthday"
+        @close="isUpdateBirthdayShow = false"
+      />
+    </van-popup>
+    <!-- /编辑生日 -->
   </div>
 </template>
 
@@ -51,18 +71,21 @@
 import { getUserProfile } from '@/api/user'
 import UpdateName from './comments/update-name'
 import UpdateGender from './comments/update-gender'
+import UpdateBirthday from './comments/update-birthday'
 export default {
   name: 'UserProfile',
   components: {
     UpdateName,
-    UpdateGender
+    UpdateGender,
+    UpdateBirthday
   },
   props: {},
   data() {
     return {
       user: {}, // 个人信息
       isUpdateNameShow: false,
-      isUpdateGenderShow: false
+      isUpdateGenderShow: false,
+      isUpdateBirthdayShow: false
     }
   },
   computed: {},
@@ -79,6 +102,12 @@ export default {
       } catch (err) {
         this.$toast('数据获取失败')
       }
+    },
+    onFileChange() {
+      // 获取文件对象
+      const file = this.$refs.file.files[0]
+      // 基于文章对象回去blob数据
+      window.URL.createObjectURL(file)
     }
   }
 }
