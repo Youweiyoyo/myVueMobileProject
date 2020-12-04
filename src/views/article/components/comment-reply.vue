@@ -61,7 +61,7 @@ export default {
       // 关闭弹层
       this.isPostShow = false
       // 将最新回复的内容展示到列表的顶部
-      this.commentList.unshift(data.nuw_obj)
+      this.commentList.unshift(data.new_obj)
     }
   }
 }

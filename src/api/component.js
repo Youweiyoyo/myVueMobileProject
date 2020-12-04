@@ -26,7 +26,6 @@ export const delCommentLike = target => {
     url: `/app/v1_0/comment/likings/${target}`
   })
 }
-//
 
 // 发布文章评论或评论回复
 export const addComment = data => {
